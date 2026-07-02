@@ -111,15 +111,15 @@ Example Funnel
 ```
 100 Users Started
 
-↓
+        ↓
 
 78 Completed Step 1
 
-↓
+        ↓
 
 56 Completed Step 2
 
-↓
+        ↓
 
 31 Appointment Booked
 ```
@@ -161,13 +161,13 @@ Google Tag Manager listens for these custom events using Custom Event Triggers a
 Flow Chart
 
 ```text
-                                                   Frontend
-                                                       ↓
-                                             window.dataLayer.push()
-                                                       ↓
-                                               Google Tag Manager
-                                                       ↓
-                                                      GA4
-                                                       ↓
-                                      Reports / Funnel Exploration / Google Ads
+Frontend
+    ↓
+window.dataLayer.push()
+    ↓
+Google Tag Manager
+    ↓
+   GA4
+    ↓
+Reports / Funnel Exploration / Google Ads
 ```
