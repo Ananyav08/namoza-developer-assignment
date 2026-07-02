@@ -158,14 +158,16 @@ The frontend developer is responsible for firing the appropriate `window.dataLay
 
 Google Tag Manager listens for these custom events using Custom Event Triggers and forwards the data to GA4. GA4 then stores the events and makes them available for reporting, Funnel Exploration, audience creation, and Google Ads conversion tracking.
 
-Flow:
+Flow Chart
 
-Frontend
-↓
-window.dataLayer.push()
-↓
-Google Tag Manager
-↓
-GA4
-↓
-Reports / Funnel Exploration / Google Ads
+```text
+                                                   Frontend
+                                                       ↓
+                                             window.dataLayer.push()
+                                                       ↓
+                                               Google Tag Manager
+                                                       ↓
+                                                      GA4
+                                                       ↓
+                                      Reports / Funnel Exploration / Google Ads
+```
