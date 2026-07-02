@@ -2,30 +2,92 @@
 
 ## 1. End-to-End Flow
 
-When a user submits the consultation form, JavaScript sends the form data (name and phone number) to the backend using an API request.
+1. User fills out the consultation form (Name, Phone, Clinic Preference) and clicks **Submit**.
+2. The frontend sends the form data to the backend using an **HTTPS POST API**.
+3. The backend validates the submitted data.
+4. The backend searches the **HubSpot CRM API** using the patient's phone number.
+5. If the phone number already exists, the existing contact is **updated**.
+6. If the phone number does not exist, a **new contact** is created with:
+   - Name
+   - Phone
+   - Clinic Preference
+   - Source = **Google Ads - Consultation Landing Page**
+   - Lead Status = **New Enquiry**
+7. After the contact is saved successfully, the backend calls the **Karix WhatsApp Business API** to send a confirmation message.
+8. At the same time, the frontend fires:
 
-The backend validates the data and checks whether the phone number already exists in HubSpot. If the contact already exists, the record is updated. Otherwise, a new contact is created.
+```javascript
+window.dataLayer.push({
+  event: "consultation_form_submitted"
+});
+```
 
-After the contact is successfully saved, a WhatsApp confirmation message is sent through Karix to acknowledge the enquiry.
-
-At the same time, Google Tag Manager records the form submission event, which is then available in Google Analytics for conversion tracking and reporting.
+9. **Google Tag Manager (GTM)** captures the event and sends it to **GA4** and **Google Ads** for conversion tracking.
 
 ---
 
-## 2. Biggest Failure Point & Solution
+## 2. Biggest Failure Point & Fallback
 
-One common issue is duplicate contact records if the same patient submits the form more than once.
+### Biggest Failure Point
 
-To prevent this, the backend first checks whether the phone number already exists in HubSpot. If it exists, the existing contact is updated instead of creating a new one.
+- HubSpot does not automatically deduplicate contacts using **phone numbers**.
+- Duplicate contacts may be created if the same patient submits the form multiple times.
 
-If HubSpot is temporarily unavailable, the form data can be stored temporarily and processed once the service is available again.
+### Solution
+
+- Search HubSpot using the phone number before creating a contact.
+- If the contact exists, update it.
+- Otherwise, create a new contact.
+- If HubSpot is temporarily unavailable, store the lead in a temporary queue/database and retry later so no enquiry is lost.
 
 ---
 
 ## 3. Monitoring WhatsApp Delivery
 
-The system should monitor whether the WhatsApp confirmation message is delivered successfully.
+### Possible Issues
 
-If the message fails due to a temporary network or server issue, it should automatically retry after a short delay.
+- Network problems
+- Karix API downtime
+- Server errors
+- Slow API response
 
-If the message still cannot be delivered after multiple attempts, the failure should be logged and the development team should be notified so that the issue can be resolved quickly.
+### Monitoring & Solution
+
+- Log every WhatsApp API request and response.
+- Automatically retry failed requests.
+- Monitor message delivery time.
+- Trigger an alert if the confirmation message is not delivered within **2 minutes**.
+
+---
+
+## Integration Flow Diagram
+
+```text
+User
+   │
+   ▼
+Landing Page
+   │
+   ▼
+Backend API
+   │
+   ├──────────────► HubSpot CRM API
+   │                  │
+   │                  ├── Contact Exists → Update
+   │                  └── New Contact → Create
+   │
+   ├──────────────► Karix WhatsApp API
+   │                  │
+   │                  └── Confirmation Message
+   │
+   └──────────────► window.dataLayer.push()
+                          │
+                          ▼
+                   Google Tag Manager
+                          │
+                          ▼
+                         GA4
+                          │
+                          ▼
+                     Google Ads
+```

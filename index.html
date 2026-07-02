@@ -6,13 +6,12 @@
     <title>Expert Orthopaedic Opinion | OrthoNow Bengaluru</title>
     <meta name="description" content="Get an expert orthopaedic opinion for chronic knee and back pain. Book your consultation at OrthoNow Bengaluru. Short wait times, expert doctors.">
     
-    <!-- Initialize Google Tag Manager Data Layer -->
     <script>
         window.dataLayer = window.dataLayer || [];
     </script>
 
     <style>
-        /* Modern, minimalist CSS targeting core performance metrics (Zero Layout Shift) */
+        /* Minimalist CSS for fast mobile performance (Zero Layout Shift) */
         :root {
             --primary: #0284c7;
             --primary-dark: #0369a1;
@@ -26,7 +25,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
@@ -55,7 +54,7 @@
         }
 
         main {
-            max-width: 480px; /* Mobile-first container constraint */
+            max-width: 480px; /* Mobile-first container */
             margin: 0 auto;
             padding: 2rem 1.25rem;
         }
@@ -80,8 +79,7 @@
             font-weight: 400;
         }
 
-        /* Highlight target audience pain points naturally */
-        .pain-points {
+        .tags-container {
             display: flex;
             justify-content: center;
             gap: 0.5rem;
@@ -97,15 +95,14 @@
             font-weight: 600;
         }
 
-        .card {
+        .form-card {
             background: var(--white);
             padding: 2rem 1.5rem;
             border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
         }
 
-        /* Form Design */
         .form-group {
             margin-bottom: 1.25rem;
         }
@@ -151,8 +148,7 @@
             background-color: var(--primary-dark);
         }
 
-        /* Trust Element */
-        .trust-banner {
+        .trust-rating {
             margin-top: 1.5rem;
             display: flex;
             align-items: center;
@@ -168,14 +164,14 @@
             font-size: 1.1rem;
         }
 
-        .trust-subtext {
+        .trust-text {
             text-align: center;
             font-size: 0.8rem;
             color: var(--text-light);
             margin-top: 0.25rem;
         }
 
-        /* Thank You State (Hidden by default) */
+        /* Thank You State */
         #thank-you-state {
             display: none;
             text-align: center;
@@ -201,9 +197,32 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Utility classes */
         .hidden {
             display: none !important;
+        }
+
+        /* Floating WhatsApp Button */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #25d366;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 24px;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        .whatsapp-button:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -217,15 +236,14 @@
         <section class="hero-section">
             <h1>Get an Expert Orthopaedic Opinion</h1>
             <p class="subheadline">Skip long hospital queues. Consult senior spine & joint specialists in Bengaluru this week.</p>
-            <div class="pain-points">
+            <div class="tags-container">
                 <span class="tag">Knee Pain</span>
                 <span class="tag">Back Pain</span>
                 <span class="tag">9 Clinics</span>
             </div>
         </section>
 
-        <section class="card">
-            <!-- Form State -->
+        <section class="form-card">
             <form id="consultation-form">
                 <div class="form-group">
                     <label for="patient-name">Full Name</label>
@@ -239,14 +257,13 @@
 
                 <button type="submit" class="btn-submit">Book Free Callback</button>
                 
-                <div class="trust-banner">
+                <div class="trust-rating">
                     <span class="stars">★★★★★</span>
                     <span>4.8/5 Rating (1,200+ Verified Patient Reviews)</span>
                 </div>
-                <p class="trust-subtext">Bengaluru's Trusted Joint & Spine Network</p>
+                <p class="trust-text">Bengaluru's Trusted Joint & Spine Network</p>
             </form>
 
-            <!-- Success State Container -->
             <div id="thank-you-state">
                 <div class="success-icon">✓</div>
                 <h2>Enquiry Received!</h2>
@@ -255,30 +272,63 @@
         </section>
     </main>
 
+    <a href="https://wa.me/918178372868" target="_blank" rel="noopener noreferrer" class="whatsapp-button" id="whatsapp-link" aria-label="Chat with OrthoNow on WhatsApp">
+        💬
+    </a>
+
     <script>
+        document.getElementById('patient-name').addEventListener('focus', function() {
+            window.dataLayer.push({
+                event: 'consultation_form_started'
+            });
+        });
+
+        // Track WhatsApp Button Click
+        document.getElementById('whatsapp-link').addEventListener('click', function() {
+            const whatsappEvent = {
+                event: 'whatsapp_widget_click',
+                link_url: 'https://wa.me/918178372868',
+                page_url: window.location.href,
+                button_position: 'floating',
+                clinic_location: 'Bengaluru'
+            };
+            window.dataLayer.push(whatsappEvent);
+            
+            console.log('✔ WhatsApp tracking successfully fired:');
+            console.table(whatsappEvent);
+        });
+
+        // Track Form Submission
         document.getElementById('consultation-form').addEventListener('submit', function(event) {
-            // Prevent standard page reload to capture tracking seamlessly
             event.preventDefault();
 
-            // Extract values safely
             const name = document.getElementById('patient-name').value.trim();
             const phone = document.getElementById('patient-phone').value.trim();
+            const phoneRegex = /^[6-9]\d{9}$/;
 
-            if (name && phone) {
-                // 1. Fire GTM dataLayer push exactly on submit event
-                window.dataLayer.push({
-                    'event': 'consultation_form_submitted',
-                    'campaign_topic': 'knee_and_back_pain_bengaluru',
-                    'form_id': 'book_a_consultation_lp',
-                    'location_context': 'Bengaluru_Hub'
-                });
+            if (name && phoneRegex.test(phone)) {
+                const submitBtn = document.querySelector('.btn-submit');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
 
-                // For validation confirmation during the Loom video walkthrough
-                console.log('✔ dataLayer.push successfully fired:', window.dataLayer);
+                setTimeout(() => {
+                    const formEvent = {
+                        event: 'consultation_form_submitted',
+                        clinic_location: 'Bengaluru',
+                        form_name: 'book_a_consultation_landing_page',
+                        page_url: window.location.href,
+                        page_title: document.title,
+                        submission_time: new Date().toISOString()
+                    };
+                    window.dataLayer.push(formEvent);
 
-                // 2. Seamlessly toggle states UI without layout shift
-                document.getElementById('consultation-form').classList.add('hidden');
-                document.getElementById('thank-you-state').style.display = 'block';
+                    console.log('✔ dataLayer.push successfully fired:');
+                    console.table(formEvent);
+
+                    // Toggle UI View
+                    document.getElementById('consultation-form').classList.add('hidden');
+                    document.getElementById('thank-you-state').style.display = 'block';
+                }, 1000);
             }
         });
     </script>
